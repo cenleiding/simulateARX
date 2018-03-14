@@ -59,6 +59,21 @@ public class CSVSyntax implements Serializable{
     }
 
     /**
+     * 获取规范化换行符。
+     * @param linebreak
+     * @return
+     */
+    public static char getNormalizedLinebreak(char[] linebreak) {
+        if (linebreak[0] == '\n') {
+            return '\n';
+        } else if ((linebreak[0] == '\r') && (linebreak.length < 2)) {
+            return '\r';
+        } else {
+            return '\n';
+        }
+    }
+
+    /**
      * 初始化CSV的语法类
      */
     public CSVSyntax() {

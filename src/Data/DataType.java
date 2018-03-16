@@ -241,14 +241,14 @@ public abstract class DataType<T> implements Serializable,Comparator<T> {
      */
     public abstract int compare(T t1, T t2);
 
-    /**
-     * Returns a new function builder.
-     *
-     * @return
-     */
-    public AggregateFunctionBuilder<T> createAggregate(){
-        return AggregateFunction.forType(this);
-    }
+//    /**
+//     * Returns a new function builder.
+//     *
+//     * @return
+//     */
+//    public AggregateFunctionBuilder<T> createAggregate(){
+//        return AggregateFunction.forType(this);
+//    }
 
     @Override
     public abstract boolean equals(Object other);

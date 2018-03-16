@@ -5,6 +5,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 
+import Data.DataType;
+import org.apache.poi.ss.formula.functions.T;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
@@ -119,6 +121,10 @@ public class CSVDataInput {
         this(new InputStreamReader(stream, charset), config.getDelimiter(), config.getQuote(), config.getEscape(), config.getLinebreak(), datatypes);
     }
 
+    public CSVDataInput(final String filename, final Charset charset) throws IOException {
+        this(filename, charset, CSVSyntax.DEFAULT_DELIMITER);
+    }
+
     public CSVDataInput(final String filename, final Charset charset, final char delimiter) throws IOException {
         this(filename, charset, delimiter, CSVSyntax.DEFAULT_QUOTE);
     }
@@ -180,14 +186,16 @@ public class CSVDataInput {
                 initParser();
                 String[] result=next;
                 next=parser.parseNext();
+                //将不符合数据类型的数据用NULL代替
+                if (cleansing) {
+                    if (result.length != datatypes.length) {
+                        throw new IllegalArgumentException("More columns available in CSV file than data types specified");
+                    }
 
-                if (result.length != datatypes.length) {
-                    throw new IllegalArgumentException("More columns available in CSV file than data types specified");
-                }
-
-                for (int i = 0; i < result.length; i++) {
-                    if (!datatypes[i].isValid(result[i])) {
-                        result[i] = DataType.NULL_VALUE;
+                    for (int i = 0; i < result.length; i++) {
+                        if (!datatypes[i].isValid(result[i])) {
+                            result[i] = DataType.NULL_VALUE;
+                        }
                     }
                 }
                 return result;

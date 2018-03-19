@@ -2,6 +2,9 @@ package Data;
 
 import IO.CSV.CSVDataInput;
 import IO.CSV.CSVSyntax;
+import IO.CSV.ImportAdapterCSV;
+import IO.ImportAdapter;
+import IO.ImportConfiguration;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.io.File;
@@ -370,39 +373,39 @@ public abstract class Data {
         return new ArrayData(array);
     }
 
-//    /**
-//     * Creates a new data object from the given data source specification.
-//     *
-//     * @param source The source that should be used to import data
-//     * @return Data object as described by the data source
-//     * @throws IOException Signals that an I/O exception has occurred.
-//     */
-//    public static Data create(final DataSource source) throws IOException {
-//
-//        ImportConfiguration config = source.getConfiguration();
-//        ImportAdapter adapter = ImportAdapter.create(config);
-//        return create(adapter);
-//    }
+    /**
+     * Creates a new data object from the given data source specification.
+     *
+     * @param source The source that should be used to import data
+     * @return Data object as described by the data source
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    public static Data create(final DataSource source) throws IOException {
 
-//    /**
-//     * Creates a new data object from an iterator over tuples.
-//     *
-//     * @param iterator An iterator
-//     * @return A Data object
-//     */
-//    public static Data create(final Iterator<String[]> iterator) {
-//
-//        // Obtain data
-//        IterableData result = new IterableData(iterator);
-//
-//        // Update definition, if needed
-//        if (iterator instanceof ImportAdapter) {
-//            result.getDefinition().parse((ImportAdapter) iterator);
+        ImportConfiguration config = source.getConfiguration();
+        ImportAdapter adapter = ImportAdapter.create(config);
+        return create(adapter);
+    }
+
+    /**
+     * Creates a new data object from an iterator over tuples.
+     *
+     * @param iterator An iterator
+     * @return A Data object
+     */
+    public static Data create(final Iterator<String[]> iterator) {
+
+        // Obtain data
+        IterableData result = new IterableData(iterator);
+
+        // Update definition, if needed
+//        if (iterator instanceof ImportAdapterCSV) {
+//            result.getDefinition().parse((ImportAdapterCSV) iterator);
 //        }
-//
-//        // Return
-//        return result;
-//    }
+
+        // Return
+        return result;
+    }
 
 //    public DataDefinition getDefinition() {
 //        return definition;

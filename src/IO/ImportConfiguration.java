@@ -11,12 +11,26 @@ import java.util.List;
 public abstract class ImportConfiguration {
 
     /**
+     * 该变量表示是否读取所有列
+     */
+    public boolean isAllColumn;
+
+
+    public boolean isAllColumn() {
+        return isAllColumn;
+    }
+
+    public void setAllColumn(boolean allColumn) {
+        isAllColumn = allColumn;
+    }
+
+    /**
      * 此列表表示要导入的列
      * 每个元素表示一个要导入的单列
      * @note 只有在列表中的列才会被导入到{处理表单}，其他列会被忽略
      * {@link ImportColumn}
      */
-    protected List<ImportColumn> columns = new ArrayList<ImportColumn>();
+    public List<ImportColumn> columns = new ArrayList<ImportColumn>();
 
     /**
      * 添加一列到{处理表单}

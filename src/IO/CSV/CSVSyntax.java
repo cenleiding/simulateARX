@@ -27,7 +27,7 @@ public class CSVSyntax implements Serializable{
     private char[] linebreak;
 
     /** Default values. */
-    public static final char   DEFAULT_DELIMITER = ';';
+    public static final char   DEFAULT_DELIMITER = ',';
 
     /** Default values. */
     public static final char   DEFAULT_QUOTE     = '\"';

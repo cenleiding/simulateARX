@@ -1,9 +1,11 @@
 package IO.CSV;
 
+import Data.DataType;
 import IO.ImportColumn;
 import IO.ImportConfiguration;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @Author CLD
@@ -33,6 +35,14 @@ public class ImportConfigurationCSV extends ImportConfiguration {
     private boolean containsHeader;
 
     /** 构造函数组*/
+    public  ImportConfigurationCSV(String fileLocation){
+        this(fileLocation, StandardCharsets.UTF_8, CSVSyntax.DEFAULT_DELIMITER, CSVSyntax.DEFAULT_QUOTE, CSVSyntax.DEFAULT_ESCAPE,true);
+    }
+
+    public  ImportConfigurationCSV(String fileLocation,Charset charset){
+        this(fileLocation, charset, CSVSyntax.DEFAULT_DELIMITER, CSVSyntax.DEFAULT_QUOTE, CSVSyntax.DEFAULT_ESCAPE,true );
+    }
+
     public ImportConfigurationCSV(String fileLocation,Charset charset,boolean containsHeader) {
         this(fileLocation, charset, CSVSyntax.DEFAULT_DELIMITER, CSVSyntax.DEFAULT_QUOTE, CSVSyntax.DEFAULT_ESCAPE, containsHeader);
     }
@@ -63,6 +73,7 @@ public class ImportConfigurationCSV extends ImportConfiguration {
         this.containsHeader = containsHeader;
         this.linebreak = linebreak;
         this.charset = charset;
+        super.setAllColumn(true);
     }
 
     /**
@@ -100,6 +111,7 @@ public class ImportConfigurationCSV extends ImportConfiguration {
         }
 
         columns.add(column);
+        super.setAllColumn(false);
     }
 
     public Charset getCharset() {
@@ -127,8 +139,16 @@ public class ImportConfigurationCSV extends ImportConfiguration {
         return containsHeader;
     }
 
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
     public void setContainsHeader(boolean containsHeader) {
         this.containsHeader = containsHeader;
+    }
+
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 
     /**
@@ -137,19 +157,28 @@ public class ImportConfigurationCSV extends ImportConfiguration {
      * @param row the row
      */
     public void prepare(String[] row) {
-
-        for (ImportColumn c : super.getColumns()) {
-            ImportColumnCSV column = (ImportColumnCSV) c;
-            if (!column.isIndexSpecified()) {
-                boolean found = false;
-                for (int i = 0; i < row.length; i++) {
-                    if (row[i].equals(column.getName())) {
-                        found = true;
-                        column.setIndex(i);
+        if(isAllColumn){
+            for(int i=0;i<row.length;i++){
+                ImportColumnCSV column= new ImportColumnCSV(row[i], DataType.STRING);
+                column.setIndex(i);
+                this.addColumn(column);
+            }
+            this.setAllColumn(false);
+        }
+        else{
+            for (ImportColumn c : super.getColumns()) {
+                ImportColumnCSV column = (ImportColumnCSV) c;
+                if (!column.isIndexSpecified()) {
+                    boolean found = false;
+                    for (int i = 0; i < row.length; i++) {
+                        if (row[i].equals(column.getName())) {
+                            found = true;
+                            column.setIndex(i);
+                        }
                     }
-                }
-                if (!found) {
-                    throw new IllegalArgumentException("Index for column '" + column.getName() + "' couldn't be found");
+                    if (!found) {
+                        throw new IllegalArgumentException("Index for column '" + column.getName() + "' couldn't be found");
+                    }
                 }
             }
         }

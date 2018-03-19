@@ -1,8 +1,14 @@
 package IO;
 
 import Data.DataType;
+import IO.CSV.ImportAdapterCSV;
+import IO.CSV.ImportConfigurationCSV;
+import IO.Excel.ImportAdapterExcel;
+import IO.Excel.ImportConfigurationExcel;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -12,8 +18,9 @@ import java.util.List;
  * @Author CLD
  * @Date 2018/3/16 15:14
  **/
-public abstract class ImportAdapter implements Iterable<String[]> {
+public abstract class ImportAdapter implements Iterator<String[]> {
 
+    /**第一行，列名*/
     protected String[] header;
 
     protected DataType<?>[] dataTypes;
@@ -25,7 +32,7 @@ public abstract class ImportAdapter implements Iterable<String[]> {
 
     protected ImportAdapter(ImportConfiguration config) {
         this.config = config;
-        if (config.getColumns().isEmpty()) {
+        if (config.getColumns().isEmpty()&&!config.isAllColumn) {
             throw new IllegalArgumentException("No columns specified");
         }
     }
@@ -38,7 +45,7 @@ public abstract class ImportAdapter implements Iterable<String[]> {
         return header;
     }
 
-    public abstract int getProgress();
+//    public abstract int getProgress();
 
     protected DataType<?>[] getColumnDatatypes() {
 
@@ -55,16 +62,16 @@ public abstract class ImportAdapter implements Iterable<String[]> {
      * @param config
      * @return
      */
-    public static ImportAdapter create(ImportConfiguration config){
-//        if (config instanceof ImportConfigurationCSV) {
-//            return new ImportAdapterCSV((ImportConfigurationCSV) config);
-//        } else if (config instanceof ImportConfigurationExcel) {
-//            return new ImportAdapterExcel((ImportConfigurationExcel) config);
+    public static ImportAdapter create(ImportConfiguration config) throws IOException {
+        if (config instanceof ImportConfigurationCSV) {
+            return new ImportAdapterCSV((ImportConfigurationCSV) config);
+        } else if (config instanceof ImportConfigurationExcel) {
+            return new ImportAdapterExcel((ImportConfigurationExcel) config);
 //        } else if (config instanceof ImportConfigurationJDBC) {
 //            return new ImportAdapterJDBC((ImportConfigurationJDBC) config);
-//        } else {
+        } else {
             throw new IllegalArgumentException("No adapter defined for this type of configuration");
-//        }
+        }
     }
 
 
